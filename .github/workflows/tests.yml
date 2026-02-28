@@ -11,19 +11,11 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        rust: [stable, '1.85']
-
-    name: Rust ${{ matrix.rust }}
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.rust }}
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Run tests
         run: cargo test --verbose

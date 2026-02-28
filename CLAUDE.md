@@ -30,7 +30,7 @@ src/
 ## Releasing
 
 - Tags use numeric format: `1.0.0` (no `v` prefix)
-- CI runs tests on stable Rust and 1.85 (MSRV)
+- CI runs tests on stable Rust
 - Pushing a tag creates GitHub Release + publishes to crates.io
 
 ## Git
