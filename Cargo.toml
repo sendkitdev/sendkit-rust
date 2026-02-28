@@ -1,6 +1,6 @@
 [package]
 name = "sendkit"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 description = "Rust SDK for the SendKit email API"
 license = "MIT"
