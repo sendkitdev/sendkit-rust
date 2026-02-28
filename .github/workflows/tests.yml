@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        rust: [stable, '1.70']
+        rust: [stable, '1.85']
 
     name: Rust ${{ matrix.rust }}
 
