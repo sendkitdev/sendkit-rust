@@ -5,7 +5,7 @@ use serde::Serialize;
 use crate::emails::Emails;
 use crate::error::{Error, ErrorResponse};
 
-const DEFAULT_BASE_URL: &str = "https://api.sendkit.com";
+const DEFAULT_BASE_URL: &str = "https://api.sendkit.dev";
 
 pub struct SendKit {
     pub(crate) client: Client,
