@@ -72,6 +72,29 @@ async fn test_send_email() {
     assert_eq!(result.unwrap().id, "email-uuid-123");
 }
 
+#[test]
+fn test_send_email_params_new() {
+    let params = SendEmailParams::new("sender@example.com", "recipient@example.com", "Hello");
+
+    assert_eq!(params.from, "sender@example.com");
+    assert_eq!(params.to, vec!["recipient@example.com"]);
+    assert_eq!(params.subject, "Hello");
+    assert!(params.html.is_none());
+    assert!(params.text.is_none());
+}
+
+#[test]
+fn test_send_email_params_new_display_name() {
+    let params = SendEmailParams::new(
+        "Support <sender@example.com>",
+        "Bob <recipient@example.com>",
+        "Hello",
+    );
+
+    assert_eq!(params.from, "Support <sender@example.com>");
+    assert_eq!(params.to, vec!["Bob <recipient@example.com>"]);
+}
+
 #[tokio::test]
 async fn test_send_with_optional_fields() {
     let server = MockServer::start().await;
