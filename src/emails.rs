@@ -40,6 +40,18 @@ pub struct SendEmailParams {
     pub attachments: Option<Vec<Attachment>>,
 }
 
+impl SendEmailParams {
+    /// Create SendEmailParams with a single recipient.
+    pub fn new(from: impl Into<String>, to: impl Into<String>, subject: impl Into<String>) -> Self {
+        Self {
+            from: from.into(),
+            to: vec![to.into()],
+            subject: subject.into(),
+            ..Default::default()
+        }
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct SendEmailResponse {
     pub id: String,
