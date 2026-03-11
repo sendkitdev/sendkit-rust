@@ -38,7 +38,7 @@ async fn test_send_email() {
     let server = MockServer::start().await;
 
     Mock::given(method("POST"))
-        .and(path("/v1/emails"))
+        .and(path("/emails"))
         .and(header("Authorization", "Bearer sk_test_123"))
         .respond_with(
             ResponseTemplate::new(200).set_body_json(serde_json::json!({"id": "email-uuid-123"})),
@@ -77,7 +77,7 @@ async fn test_send_with_optional_fields() {
     let server = MockServer::start().await;
 
     Mock::given(method("POST"))
-        .and(path("/v1/emails"))
+        .and(path("/emails"))
         .respond_with(
             ResponseTemplate::new(200).set_body_json(serde_json::json!({"id": "email-uuid-456"})),
         )
@@ -114,7 +114,7 @@ async fn test_send_mime_email() {
     let server = MockServer::start().await;
 
     Mock::given(method("POST"))
-        .and(path("/v1/emails/mime"))
+        .and(path("/emails/mime"))
         .respond_with(
             ResponseTemplate::new(200).set_body_json(serde_json::json!({"id": "mime-uuid-789"})),
         )
@@ -144,7 +144,7 @@ async fn test_api_error() {
     let server = MockServer::start().await;
 
     Mock::given(method("POST"))
-        .and(path("/v1/emails"))
+        .and(path("/emails"))
         .respond_with(ResponseTemplate::new(422).set_body_json(serde_json::json!({
             "name": "validation_error",
             "message": "The to field is required.",

@@ -60,11 +60,11 @@ pub struct SendMimeEmailResponse {
 impl Emails {
     /// Send a structured email.
     pub async fn send(&self, client: &SendKit, params: &SendEmailParams) -> Result<SendEmailResponse, Error> {
-        client.post("/v1/emails", params).await
+        client.post("/emails", params).await
     }
 
     /// Send a raw MIME email.
     pub async fn send_mime(&self, client: &SendKit, params: &SendMimeEmailParams) -> Result<SendMimeEmailResponse, Error> {
-        client.post("/v1/emails/mime", params).await
+        client.post("/emails/mime", params).await
     }
 }
