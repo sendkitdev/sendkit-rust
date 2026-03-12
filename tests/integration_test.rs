@@ -92,6 +92,13 @@ fn test_send_email_params_new() {
 }
 
 #[test]
+fn test_send_email_params_with_reply_to() {
+    let params = SendEmailParams::new("from@example.com", "to@example.com", "Hello")
+        .with_reply_to("reply@example.com");
+    assert_eq!(params.reply_to, Some(vec!["reply@example.com".to_string()]));
+}
+
+#[test]
 fn test_send_email_params_new_display_name() {
     let params = SendEmailParams::new(
         "Support <sender@example.com>",
@@ -114,7 +121,7 @@ async fn test_send_with_optional_fields() {
             "to": ["recipient@example.com"],
             "subject": "Test",
             "html": "<p>Hi</p>",
-            "reply_to": "reply@example.com",
+            "reply_to": ["reply@example.com"],
             "scheduled_at": "2026-03-01T10:00:00Z"
         })))
         .respond_with(
@@ -136,7 +143,7 @@ async fn test_send_with_optional_fields() {
                 text: None,
                 cc: None,
                 bcc: None,
-                reply_to: Some("reply@example.com".into()),
+                reply_to: Some(vec!["reply@example.com".into()]),
                 headers: None,
                 tags: None,
                 scheduled_at: Some("2026-03-01T10:00:00Z".into()),
@@ -612,4 +619,52 @@ async fn test_send_email_null_fields_omitted() {
             key
         );
     }
+}
+
+#[test]
+fn test_send_email_params_with_cc() {
+    let params = SendEmailParams::new("from@example.com", "to@example.com", "Hello")
+        .with_cc("cc@example.com");
+    assert_eq!(params.cc, Some(vec!["cc@example.com".to_string()]));
+}
+
+#[test]
+fn test_send_email_params_with_bcc() {
+    let params = SendEmailParams::new("from@example.com", "to@example.com", "Hello")
+        .with_bcc("bcc@example.com");
+    assert_eq!(params.bcc, Some(vec!["bcc@example.com".to_string()]));
+}
+
+#[tokio::test]
+async fn test_send_email_with_cc_bcc_builder_serialization() {
+    let server = MockServer::start().await;
+
+    Mock::given(method("POST"))
+        .and(path("/emails"))
+        .and(header("Authorization", "Bearer sk_test_123"))
+        .and(body_partial_json(serde_json::json!({
+            "from": "sender@example.com",
+            "to": ["recipient@example.com"],
+            "subject": "Builder CC/BCC",
+            "cc": ["cc@example.com"],
+            "bcc": ["bcc@example.com"]
+        })))
+        .respond_with(
+            ResponseTemplate::new(200)
+                .set_body_json(serde_json::json!({"id": "email-builder-cc-bcc"})),
+        )
+        .mount(&server)
+        .await;
+
+    let client = SendKit::with_base_url("sk_test_123", &server.uri()).unwrap();
+    let params = SendEmailParams::new("sender@example.com", "recipient@example.com", "Builder CC/BCC")
+        .with_cc("cc@example.com")
+        .with_bcc("bcc@example.com");
+    let mut params = params;
+    params.html = Some("<p>Hello</p>".into());
+
+    let result = client.emails.send(&client, &params).await;
+
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap().id, "email-builder-cc-bcc");
 }

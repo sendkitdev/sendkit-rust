@@ -35,7 +35,7 @@ pub struct SendEmailParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bcc: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_to: Option<String>,
+    pub reply_to: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub headers: Option<HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -55,6 +55,24 @@ impl SendEmailParams {
             subject: subject.into(),
             ..Default::default()
         }
+    }
+
+    /// Set a single reply-to address (builder-style).
+    pub fn with_reply_to(mut self, reply_to: impl Into<String>) -> Self {
+        self.reply_to = Some(vec![reply_to.into()]);
+        self
+    }
+
+    /// Set a single CC address (builder-style).
+    pub fn with_cc(mut self, cc: impl Into<String>) -> Self {
+        self.cc = Some(vec![cc.into()]);
+        self
+    }
+
+    /// Set a single BCC address (builder-style).
+    pub fn with_bcc(mut self, bcc: impl Into<String>) -> Self {
+        self.bcc = Some(vec![bcc.into()]);
+        self
     }
 }
 
