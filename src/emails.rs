@@ -15,6 +15,12 @@ pub struct Attachment {
     pub content_type: Option<String>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Tag {
+    pub name: String,
+    pub value: String,
+}
+
 #[derive(Debug, Default, Serialize)]
 pub struct SendEmailParams {
     pub from: String,
@@ -33,7 +39,7 @@ pub struct SendEmailParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub headers: Option<HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tags: Option<Vec<String>>,
+    pub tags: Option<Vec<Tag>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub scheduled_at: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

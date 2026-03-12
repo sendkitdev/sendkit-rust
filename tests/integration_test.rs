@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use sendkit::{Attachment, Error, SendEmailParams, SendKit, SendMimeEmailParams};
+use sendkit::{Attachment, Error, SendEmailParams, SendKit, SendMimeEmailParams, Tag};
 use wiremock::matchers::{body_partial_json, header, method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -405,7 +405,10 @@ async fn test_send_email_with_tags() {
             "from": "sender@example.com",
             "to": ["recipient@example.com"],
             "subject": "Tagged Email",
-            "tags": ["onboarding", "welcome", "transactional"]
+            "tags": [
+                {"name": "category", "value": "welcome"},
+                {"name": "campaign", "value": "onboarding"}
+            ]
         })))
         .respond_with(
             ResponseTemplate::new(200).set_body_json(serde_json::json!({"id": "email-tags-004"})),
@@ -429,9 +432,8 @@ async fn test_send_email_with_tags() {
                 reply_to: None,
                 headers: None,
                 tags: Some(vec![
-                    "onboarding".into(),
-                    "welcome".into(),
-                    "transactional".into(),
+                    Tag { name: "category".into(), value: "welcome".into() },
+                    Tag { name: "campaign".into(), value: "onboarding".into() },
                 ]),
                 scheduled_at: None,
                 attachments: None,
